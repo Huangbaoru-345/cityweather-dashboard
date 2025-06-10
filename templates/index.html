@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天气数据可视化大屏</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a1a2e;
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        #title {
+            position: absolute;
+            width: 40%;
+            height: 10%;
+            top: 0;
+            left: 30%;
+            color: #fff;
+            font-size: 2.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-shadow: 0 0 10px #4cc9f0;
+            z-index: 10;
+        }
+        #time {
+            position: absolute;
+            right: 2%;
+            top: 3%;
+            color: #fff;
+            font-size: 1.2rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(0,0,0,0.5);
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(76, 201, 240, 0.5);
+            z-index: 10;
+        }
+        .panel {
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            padding: 15px;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .panel:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(76, 201, 240, 0.7);
+        }
+        #l1 {
+            position: absolute;
+            width: 28%;
+            height: 43%;
+            top: 12%;
+            left: 1%;
+            background: linear-gradient(135deg, #4e54c8, #8f94fb);
+        }
+        #l2 {
+            position: absolute;
+            width: 28%;
+            height: 43%;
+            top: 57%;
+            left: 1%;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+        }
+        #c1 {
+            position: absolute;
+            width: 38%;
+            height: 23%;
+            top: 12%;
+            left: 30%;
+            background: linear-gradient(135deg, #f46b45, #eea849);
+        }
+        #c2 {
+            position: absolute;
+            width: 38%;
+            height: 65%;
+            top: 37%;
+            left: 30%;
+            background: linear-gradient(135deg, #a8ff78, #78ffd6);
+            color: #333;
+        }
+        #r1 {
+            position: absolute;
+            width: 28%;
+            height: 43%;
+            top: 12%;
+            right: 1%;
+            background: linear-gradient(135deg, #f857a6, #ff5858);
+        }
+        #r2 {
+            position: absolute;
+            width: 28%;
+            height: 43%;
+            top: 57%;
+            right: 1%;
+            background: linear-gradient(135deg, #654ea3, #eaafc8);
+        }
+    </style>
+    {{ line_chart_js_dependencies | safe }}
+
+</head>
+<body>
+    <div id="title">全国城市天气数据大屏</div>
+    <div id="time">--:--:--</div>
+    <div id="l1" class="panel">城市天气概览<br><span style="font-size: 1rem;">广州、深圳、重庆等</span></div>
+    <div id="l2" class="panel">气温对比分析</div>
+    <div id="c1" class="panel">今日天气地图</div>
+    <div id="c2" class="panel">
+    各城市趋势曲线分析
+    <div id="line_chart" style="width: 100%; height: 90%;"></div>
+    {{ line_chart | safe }}
+    </div>
+
+    <div id="r1" class="panel">湿度 / 风力分析</div>
+    <div id="r2" class="panel">未来7天天气预报</div>
+
+    <script>
+        // 更新时间显示
+        function updateTime() {
+            const now = new Date();
+            document.getElementById("time").textContent = now.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            }).replace(/\//g, '-');
+        }
+
+        // 面板淡入动画
+        function animatePanels() {
+            const panels = document.querySelectorAll('.panel');
+            panels.forEach((panel, index) => {
+                panel.style.opacity = '0';
+                panel.style.transform = 'translateY(20px)';
+                panel.style.animation = `fadeIn 0.5s ease-out ${index * 0.1}s forwards`;
+            });
+
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeIn {
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // 页面加载完后执行
+        document.addEventListener('DOMContentLoaded', () => {
+            updateTime();
+            setInterval(updateTime, 1000);
+            animatePanels();
+
+            // 点击动画
+            document.querySelectorAll('.panel').forEach(panel => {
+                panel.addEventListener('click', function() {
+                    this.style.animation = 'none';
+                    setTimeout(() => {
+                        this.style.animation = 'pulse 0.5s';
+                    }, 10);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

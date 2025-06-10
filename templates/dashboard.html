@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>天气数据大屏</title>
+<style>
+  body {
+    margin: 0; padding: 0;
+    background-color: #e8e8e8;
+    font-family: "Microsoft YaHei", sans-serif;
+    color: #333;
+  }
+  #header {
+    text-align: center;
+    font-size: 2.5rem;
+    padding: 20px 0;
+    font-weight: bold;
+    color: #222;
+  }
+  #time {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    background: #fff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    font-size: 1rem;
+    color: #555;
+    user-select: none;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 30px auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 25px;
+    padding: 0 20px 40px;
+  }
+  .panel {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 25px;
+    font-size: 1.3rem;
+    color: #222;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .panel:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+  .panel:active {
+    transform: scale(1.05);
+  }
+</style>
+</head>
+<body>
+  <div id="header">全国城市天气数据大屏</div>
+  <div id="time">--:--:--</div>
+  <div class="container">
+    <div class="panel" id="panel1">风向频次分析{{wind_chart | safe}}</div>
+    <div class="panel" id="panel2">气温对比分析{{avg_tempchart | safe}}</div>
+    <div class="panel" id="panel3">已爬取城市<div>{{ weather_map|safe }}</div>
+</div>
+     <div id="c2" class="panel">
+        各城市温度趋势图
+        {{ line_chart | safe }}
+    </div>
+     <div id="r2" class="panel">
+        词云图
+        {{ wordcloud | safe }}
+    </div>
+    <div class="panel" id="panel6">各城市晴天天数占比
+        {{ pie_chart | safe }}</div>
+  </div>
+
+<script>
+  // 更新时间显示
+  function updateTime() {
+    const now = new Date();
+    const timeStr = now.toLocaleString('zh-CN', {
+      hour12: false,
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+      year: 'numeric', month: '2-digit', day: '2-digit'
+    }).replace(/\//g, '-');
+    document.getElementById('time').textContent = timeStr;
+  }
+  updateTime();
+  setInterval(updateTime, 1000);
+
+  // 点击面板时的放大动画，使用 CSS active 状态即可，不隐藏
+  // 如果你想用 JS 动画，也可以补充，这里先保持简洁
+</script>
+</body>
+</html>
