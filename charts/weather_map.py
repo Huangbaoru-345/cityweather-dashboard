@@ -10,6 +10,9 @@ def create_weather_map():
         Geo()
         .add_schema(
             maptype="china",
+            zoom=1.5,  # 放大地图，默认是1，试试1.5或更大
+            # center 可以调整中心点，比如中心在中国中心（116.46, 39.92）
+            center=[116.46, 39.92],  
             itemstyle_opts=opts.ItemStyleOpts(color="#f0f8ff", border_color="#111"),
         )
         .add(
@@ -21,7 +24,6 @@ def create_weather_map():
             itemstyle_opts=opts.ItemStyleOpts(color="orange"),
         )
         .set_global_opts(
-            # title_opts=opts.TitleOpts(title="已爬取城市分布图"),
             legend_opts=opts.LegendOpts(is_show=False),
             tooltip_opts=opts.TooltipOpts(trigger="item", formatter="{b}")
         )
