@@ -16,7 +16,7 @@ def index():
     avg_tempchart = create_avg_temp_bar_chart()
     wind_chart = create_wind_direction_chart()
     return render_template(
-        'dashboard.html',
+        'index.html',
         line_chart=line_chart.render_embed(),
         pie_chart=pie_chart.render_embed(),
         weather_map=weather_map.render_embed(),
