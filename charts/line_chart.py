@@ -45,8 +45,21 @@ def line_temperature_chart():
                 bg_color="rgba(10, 25, 47, 0.9)"  # 深蓝背景
             ))
             .add_xaxis(dates)
-            .add_yaxis("最高温度", highs, is_smooth=True, label_opts=label_style)
-            .add_yaxis("最低温度", lows, is_smooth=True, label_opts=label_style)
+           .add_yaxis(
+    "最高温度", 
+    highs, 
+    is_smooth=True, 
+    label_opts=opts.LabelOpts(is_show=True, color="#ffffff"),
+    tooltip_opts=opts.TooltipOpts(is_show=True)
+)
+.add_yaxis(
+    "最低温度", 
+    lows, 
+    is_smooth=True, 
+    label_opts=opts.LabelOpts(is_show=True, color="#ffffff"),
+    tooltip_opts=opts.TooltipOpts(is_show=True)
+)
+
             .set_global_opts(
                 title_opts=opts.TitleOpts(
                     title=f"{city}气温变化趋势",
