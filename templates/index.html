@@ -1,228 +1,229 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>天气数据大屏</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --primary: #00f7ff;
-    --secondary: #ff2d75;
-    --accent: #9c27b0;
-    --dark: #0a192f;
-    --darker: #020c1b;
-    --light: #e6f1ff;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>天气数据大屏</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #00f7ff;
+      --secondary: #ff2d75;
+      --accent: #9c27b0;
+      --dark: #0a192f;
+      --darker: #020c1b;
+      --light: #e6f1ff;
+    }
 
-  body {
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(135deg, var(--darker), var(--dark));
-    font-family: 'Roboto', 'Microsoft YaHei', sans-serif;
-    color: var(--light);
-    overflow-x: hidden;
-    min-height: 100vh;
-  }
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, var(--darker), var(--dark));
+      font-family: 'Roboto', 'Microsoft YaHei', sans-serif;
+      color: var(--light);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
 
-  #particles-js {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    background: transparent;
-  }
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: transparent;
+    }
 
-  #header {
-    text-align: center;
-    font-size: 3rem;
-    padding: 30px 0 20px;
-    font-weight: bold;
-    color: var(--primary);
-    font-family: 'Orbitron', sans-serif;
-    text-shadow: 0 0 10px rgba(0, 247, 255, 0.7);
-    letter-spacing: 2px;
-    position: relative;
-  }
+    #header {
+      text-align: center;
+      font-size: 3rem;
+      padding: 30px 0 20px;
+      font-weight: bold;
+      color: var(--primary);
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 0 0 10px rgba(0, 247, 255, 0.7);
+      letter-spacing: 2px;
+      position: relative;
+    }
 
-  #header::after {
-    content: '';
-    display: block;
-    width: 200px;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--primary), transparent);
-    margin: 10px auto 0;
-    border-radius: 50%;
-    filter: blur(1px);
-  }
+    #header::after {
+      content: '';
+      display: block;
+      width: 200px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      margin: 10px auto 0;
+      border-radius: 50%;
+      filter: blur(1px);
+    }
 
-  #time {
-    position: fixed;
-    top: 30px;
-    right: 40px;
-    background: rgba(10, 25, 47, 0.8);
-    padding: 12px 24px;
-    border-radius: 30px;
-    box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
-    font-size: 1.1rem;
-    color: var(--primary);
-    font-family: 'Orbitron', sans-serif;
-    border: 1px solid rgba(0, 247, 255, 0.3);
-    backdrop-filter: blur(5px);
-    z-index: 10;
-  }
+    #time {
+      position: fixed;
+      top: 30px;
+      right: 40px;
+      background: rgba(10, 25, 47, 0.8);
+      padding: 12px 24px;
+      border-radius: 30px;
+      box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
+      font-size: 1.1rem;
+      color: var(--primary);
+      font-family: 'Orbitron', sans-serif;
+      border: 1px solid rgba(0, 247, 255, 0.3);
+      backdrop-filter: blur(5px);
+      z-index: 10;
+    }
 
-  .container {
-    max-width: 2800px;
-    margin: 50px auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
-    grid-gap: 50px;
-    padding: 0 30px 60px;
-    margin-top: -100px;
-  }
+    .top-row {
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+      max-width: 1200px;
+      margin: 40px auto 60px;
+      flex-wrap: nowrap;
+    }
 
   .top-row {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 40px;
-    margin: 50px auto;
-    max-width: 2800px;
-    margin-top:-20px;
-  }
-
-  .panel {
-    background: rgba(10, 25, 47, 0.4);
-    border-radius: 20px;
-    padding: 10px;
-    font-size: 1.5rem;
-    color: var(--light);
-    text-align: center;
-    cursor: pointer;
-    user-select: none;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    backdrop-filter: blur(8px);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .panel:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 30px rgba(0, 247, 255, 0.1);
-  }
-
-  .panel::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(0, 247, 255, 0.1), transparent);
-    transform: rotate(45deg);
-    transition: all 0.6s ease;
-    opacity: 0;
-  }
-
-  .panel:hover::before {
-    animation: shine 1.5s;
-    opacity: 1;
-  }
-
-  .map1-panel {
-    width: 1200px;
-    height: 650px;
-    margin-left: 10px;
-  }
-
-  .box1 {
-    width: 1000px;
-    height: 650px;
-  }
-
-  .map-panel {
-    min-width: 480px;
-    min-height: 280px;
-    margin-bottom: 4000px;
-  }
-
-  .panel-title {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    color: var(--primary);
-    font-weight: 700;
-    position: relative;
-    display: inline-block;
-  }
-
-  .panel-title::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 2px;
-    background: var(--secondary);
-    border-radius: 2px;
-  }
-
-  @keyframes shine {
-    0% { left: -50%; opacity: 0; }
-    50% { opacity: 0.3; }
-    100% { left: 150%; opacity: 0; }
-  }
-
-  @media (max-width: 1200px) {
-    .top-row {
-      flex-direction: column;
-      align-items: center;
+      display: flex;
+      justify-content: center;
+      gap: 50px; /* ← 就是这个参数控制两个图之间的间距 */
+      max-width: 1200px;
+      margin: 40px auto 60px;
+      flex-wrap: nowrap;
     }
-  }
 
-  @keyframes ripple-effect {
-    from {
-      width: 0;
-      height: 0;
-      opacity: 0.6;
+    .container {
+      max-width: 1800px;
+      /* margin: 0 auto 80px; */
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 90px;
+      padding: 0 20px;
+      
     }
-    to {
-      width: 200px;
-      height: 200px;
+
+    .container .panel {
+      height: 590px;
+      width: 700px;
+      background: rgba(10, 25, 47, 0.4);
+      border-radius: 20px;
+      padding: 10px;
+      font-size: 1.5rem;
+      color: var(--light);
+      text-align: center;
+      user-select: none;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      backdrop-filter: blur(8px);
+      position: relative;
+      overflow: hidden;
+      margin-left: 1px;
+    }
+
+    .panel {
+      cursor: pointer;
+    }
+
+    .panel:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(0, 247, 255, 0.1);
+    }
+
+    .panel::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(0, 247, 255, 0.1), transparent);
+      transform: rotate(45deg);
+      transition: all 0.6s ease;
       opacity: 0;
     }
-  }
 
-  /* ====== 点击出现小星星的样式 ====== */
-  .click-star {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    background: radial-gradient(circle at center, #fff, #00f7ff);
-    filter: drop-shadow(0 0 4px #00f7ff);
-    border-radius: 50%;
-    animation: star-fly-up 1s forwards;
-    pointer-events: none;
-    transform-origin: center;
-    z-index: 1000;
-  }
+    .panel:hover::before {
+      animation: shine 1.5s;
+      opacity: 1;
+    }
 
-  @keyframes star-fly-up {
-    0% {
-      opacity: 1;
-      transform: translateY(0) scale(1) rotate(0deg);
+    .panel-title {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: var(--primary);
+      font-weight: 700;
+      position: relative;
+      display: inline-block;
     }
-    50% {
-      opacity: 1;
-      transform: translateY(-30px) scale(1.5) rotate(180deg);
+
+    .panel-title::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 2px;
+      background: var(--secondary);
+      border-radius: 2px;
     }
-    100% {
-      opacity: 0;
-      transform: translateY(-60px) scale(0.5) rotate(360deg);
+
+    @keyframes shine {
+      0% { left: -50%; opacity: 0; }
+      50% { opacity: 0.3; }
+      100% { left: 150%; opacity: 0; }
     }
-  }
-</style>
+
+    @media (max-width: 1300px) {
+      .top-row {
+        flex-wrap: wrap;
+        max-width: 100%;
+        gap: 30px;
+      }
+      .top-row .panel {
+        min-width: 100%;
+        height: 400px;
+      }
+      .container {
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 30px;
+      }
+      .container .panel {
+        height: 300px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+      .container .panel {
+        height: 250px;
+      }
+    }
+
+    @keyframes ripple-effect {
+      from { width: 0; height: 0; opacity: 0.6; }
+      to { width: 200px; height: 200px; opacity: 0; }
+    }
+
+.click-star {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: radial-gradient(circle at center, #fff, #00f7ff);
+  filter: drop-shadow(0 0 8px #00f7ff);
+  border-radius: 50%;
+  animation: star-fly-up 1s forwards;
+  pointer-events: none;
+  transform-origin: center;
+  z-index: 1000;
+}
+
+@keyframes star-fly-up {
+  0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+  50% { opacity: 1; transform: translateY(-30px) scale(3) rotate(180deg); }
+  100% { opacity: 0; transform: translateY(-60px) scale(1) rotate(360deg); }
+}
+
+  </style>
 </head>
 <body>
   <div id="particles-js"></div>
@@ -230,111 +231,104 @@
   <div id="time">--:--:--</div>
 
   <div class="top-row">
-    <div class="map1-panel panel" id="line_chart">
+    <div class="panel" id="line_chart">
       <div class="panel-title">各城市温度趋势</div>
       {{ line_chart | safe }}
     </div>
-    <div class="box1 panel" id="wind_chart">
+    <div class="panel" id="wind_chart">
       <div class="panel-title">风向频次分析</div>
       {{ wind_chart | safe }}
     </div>
   </div>
 
   <div class="container">
-    <div class="map-panel panel" id="weather_map">
+    <div class="panel" id="weather_map">
       <div class="panel-title">已爬取城市</div>
       {{ weather_map | safe }}
     </div>
-
-    <div class="map-panel panel" id="wordcloud">
+    <div class="panel" id="wordcloud">
       <div class="panel-title">天气词云</div>
       {{ wordcloud | safe }}
     </div>
-
-    <div class="map-panel panel" id="pie_chart">
+    <div class="panel" id="pie_chart">
       <div class="panel-title">晴天天数占比</div>
       {{ pie_chart | safe }}
     </div>
   </div>
 
-<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-<script>
-  function updateTime() {
-    const now = new Date();
-    const timeStr = now.toLocaleString('zh-CN', {
-      hour12: false,
-      hour: '2-digit', 
-      minute: '2-digit', 
-      second: '2-digit',
-      year: 'numeric', 
-      month: '2-digit', 
-      day: '2-digit'
-    }).replace(/\//g, '-');
-    document.getElementById('time').textContent = timeStr;
-  }
-  setInterval(updateTime, 1000);
-  updateTime();
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+    function updateTime() {
+      const now = new Date();
+      const timeStr = now.toLocaleString('zh-CN', {
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).replace(/\//g, '-');
+      document.getElementById('time').textContent = timeStr;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
 
-  particlesJS('particles-js', {
-    "particles": {
-      "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
-      "color": { "value": "#00f7ff" },
-      "shape": { "type": "circle", "stroke": { "width": 0, "color": "#000000" } },
-      "opacity": {
-        "value": 0.5,
-        "random": true,
-        "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false }
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 80, density: { enable: true, value_area: 800 } },
+        color: { value: "#00f7ff" },
+        shape: { type: "circle" },
+        opacity: {
+          value: 0.5,
+          random: true,
+          anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false }
+        },
+        size: {
+          value: 3,
+          random: true,
+          anim: { enable: true, speed: 2, size_min: 0.1, sync: false }
+        },
+        line_linked: {
+          enable: true,
+          distance: 150,
+          color: "#00f7ff",
+          opacity: 0.4,
+          width: 1
+        },
+        move: {
+          enable: true,
+          speed: 2,
+          direction: "none",
+          random: false,
+          straight: false,
+          out_mode: "out",
+          bounce: false
+        }
       },
-      "size": {
-        "value": 3,
-        "random": true,
-        "anim": { "enable": true, "speed": 2, "size_min": 0.1, "sync": false }
+      interactivity: {
+        detect_on: "canvas",
+        events: {
+          onhover: { enable: true, mode: "repulse" },
+          onclick: { enable: true, mode: "push" },
+          resize: true
+        },
+        modes: {
+          repulse: { distance: 100, duration: 0.4 },
+          push: { particles_nb: 4 }
+        }
       },
-      "line_linked": {
-        "enable": true,
-        "distance": 150,
-        "color": "#00f7ff",
-        "opacity": 0.4,
-        "width": 1
-      },
-      "move": {
-        "enable": true,
-        "speed": 2,
-        "direction": "none",
-        "random": true,
-        "straight": false,
-        "out_mode": "bounce",
-        "bounce": true,
-        "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 }
-      }
-    },
-    "interactivity": {
-      "detect_on": "canvas",
-      "events": {
-        "onhover": { "enable": true, "mode": "grab" },
-        "onclick": { "enable": true, "mode": "push" },
-        "resize": true
-      },
-      "modes": {
-        "grab": { "distance": 140, "line_linked": { "opacity": 1 } },
-        "bubble": { "distance": 400, "size": 40, "duration": 2, "opacity": 8, "speed": 3 },
-        "repulse": { "distance": 200, "duration": 0.4 },
-        "push": { "particles_nb": 4 },
-        "remove": { "particles_nb": 2 }
-      }
-    },
-    "retina_detect": true
-  });
-
-  // ======= 鼠标点击时出现小星星效果 =======
+      retina_detect: true
+    });
+    // ======= 鼠标点击时出现小星星效果 =======
   document.body.addEventListener('click', function(e) {
     const star = document.createElement('div');
     star.className = 'click-star';
     star.style.left = e.pageX + 'px';
     star.style.top = e.pageY + 'px';
     document.body.appendChild(star);
-    setTimeout(() => star.remove(), 1000);
+    setTimeout(() => star.remove(), 3000);
   });
-</script>
+  </script>
 </body>
 </html>
