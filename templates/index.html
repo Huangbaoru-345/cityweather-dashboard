@@ -91,12 +91,12 @@
     }
 
     .container {
-      max-width: 1800px;
-      /* margin: 0 auto 80px; */
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-gap: 90px;
-      padding: 0 20px;
+       display: flex;
+      justify-content: center;
+      gap: 50px; /* ← 就是这个参数控制两个图之间的间距 */
+      max-width: 3500px;
+      margin: 40px auto 60px;
+      flex-wrap: nowrap;
       
     }
 
