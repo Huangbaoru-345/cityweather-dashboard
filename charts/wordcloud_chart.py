@@ -32,6 +32,9 @@ def create_weather_wordcloud():
             word_size_range=[20, 80],
             shape="circle",            # 词云形状（可选：circle, cardioid, diamond, triangle...）
             rotate_step=20,           # 旋转角度间隔（可选）
+            textstyle_opts=opts.TextStyleOpts(
+            font_family="Microsoft YaHei"
+        )
         )
         .set_global_opts(
             title_opts=opts.TitleOpts(

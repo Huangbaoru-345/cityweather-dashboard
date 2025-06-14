@@ -5,9 +5,19 @@ from pyecharts import options as opts
 def create_pie_chart():
     df = pd.read_csv('city-weather.csv')
 
-    sunny_counts = df[df['天气'].str.contains('晴')]['城市'].value_counts()
+    # 获取所有城市（保持顺序）
+    city_list = df['城市'].unique()
+
+    # 统计每个城市的“晴”天数
+    sunny_counts = df[df['天气'].str.contains('晴', na=False)]['城市'].value_counts()
+
+    # 保证所有城市都在统计中，缺失的城市用 0 填充
+    sunny_counts = sunny_counts.reindex(city_list, fill_value=0)
+
+    # 转为 (城市, 晴天数) 的列表
     data_pair = list(zip(sunny_counts.index.tolist(), sunny_counts.tolist()))
 
+    # 创建饼图对象
     pie = Pie(init_opts=opts.InitOpts(
         width="700px",
         height="500px",
@@ -15,7 +25,7 @@ def create_pie_chart():
     ))
 
     pie.add(
-        "晴天天数占比",  # 这个参数不能省略
+        "晴天天数占比",
         data_pair,
         radius=["40%", "70%"],
         center=["50%", "60%"],
@@ -50,7 +60,7 @@ def create_pie_chart():
     pie.set_series_opts(
         tooltip_opts=opts.TooltipOpts(
             formatter="{b}: {d}%",
-            background_color="transparent",  # 透明背景去掉白框
+            background_color="transparent",
             textstyle_opts=opts.TextStyleOpts(
                 color="#ffffff"
             )
