@@ -1,7 +1,8 @@
 import os
 from datetime import datetime, timedelta
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify
 import threading
+import json
 
 from charts.line_trend import create_line_chart
 from charts.pie_chart import create_pie_chart
@@ -14,8 +15,37 @@ from spider.weather_spider import update_weather_csv
 
 app = Flask(__name__)
 
+# 点赞相关配置
+LIKE_FILE = 'likes.json'
+like_lock = threading.Lock()  # 点赞锁
 UPDATE_TIMESTAMP_FILE = 'last_update.txt'
-update_lock = threading.Lock()  # 锁，防止多线程同时更新
+update_lock = threading.Lock()  # 更新锁
+
+# 初始化点赞数据
+if not os.path.exists(LIKE_FILE):
+    with like_lock:
+        with open(LIKE_FILE, 'w') as f:
+            json.dump({'likes': 0}, f)
+
+def read_likes():
+    with like_lock:
+        with open(LIKE_FILE, 'r') as f:
+            return json.load(f)['likes']
+
+def write_likes(count):
+    with like_lock:
+        with open(LIKE_FILE, 'w') as f:
+            json.dump({'likes': count}, f)
+
+@app.route('/like', methods=['POST'])
+def like():
+    likes = read_likes() + 1
+    write_likes(likes)
+    return jsonify({'likes': likes})
+
+@app.route('/get_likes', methods=['GET'])
+def get_likes():
+    return jsonify({'likes': read_likes()})
 
 def need_update():
     if not os.path.exists(UPDATE_TIMESTAMP_FILE):
@@ -45,18 +75,18 @@ def background_update():
 @app.route('/')
 def index():
     if need_update():
-        # 尝试非阻塞地获得锁，判断是否有线程正在更新
         if update_lock.acquire(blocking=False):
-            # 成功获得锁，开启线程更新，并立即释放锁让线程管理
-            threading.Thread(target=background_update, daemon=True).start()
-            update_lock.release()
-            print("已启动后台线程更新数据")
+            try:
+                threading.Thread(target=background_update, daemon=True).start()
+                print("已启动后台线程更新数据")
+            finally:
+                update_lock.release()
         else:
             print("已有更新线程在运行，跳过启动新线程")
     else:
         print("数据已是最新，直接使用缓存")
 
-    # 直接使用现有数据生成图表，快速响应页面
+    # 生成图表
     line_chart = create_line_chart()
     pie_chart = create_pie_chart()
     weather_map = create_weather_map()

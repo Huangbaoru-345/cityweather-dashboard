@@ -222,6 +222,7 @@
       transform: translateY(-60px) scale(0.5) rotate(360deg);
     }
   }
+  
 </style>
 </head>
 <body>
@@ -256,7 +257,20 @@
       {{ pie_chart | safe }}
     </div>
   </div>
-
+<div id="like-counter" style="
+  position: fixed;
+  top: 90px;
+  right: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--primary);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  box-shadow: 0 0 10px rgba(0, 247, 255, 0.3);
+  backdrop-filter: blur(5px);
+  z-index: 10;
+">👍 点赞数：<span id="like-count">0</span></div>
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 <script>
   function updateTime() {
@@ -335,6 +349,25 @@
     document.body.appendChild(star);
     setTimeout(() => star.remove(), 1000);
   });
+  // 点击页面就点赞
+document.body.addEventListener('click', function () {
+  fetch('/like', { method: 'POST' })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('like-count').textContent = data.likes;
+    });
+});
+
+// 页面加载时获取当前点赞数
+window.addEventListener('DOMContentLoaded', () => {
+  fetch('/get_likes')
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('like-count').textContent = data.likes;
+    });
+});
+
 </script>
+
 </body>
 </html>
