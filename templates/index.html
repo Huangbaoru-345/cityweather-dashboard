@@ -381,13 +381,14 @@ window.addEventListener('DOMContentLoaded', () => {
     .then(data => {
       document.getElementById('like-count').textContent = data.likes;
     });
-});
- if (window.innerWidth < 1400) {
+    if (window.innerWidth < 1400) {
     document.getElementById('screen-tip').style.display = 'block';
     setTimeout(() => {
       document.getElementById('screen-tip').style.display = 'none';
     }, 8000);
   }
+});
+ 
 </script>
 
 </body>
